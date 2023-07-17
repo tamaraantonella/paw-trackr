@@ -9,3 +9,129 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id         Int    @id @unique @default(autoincrement())
+  email      String @unique @db.VarChar(255)
+  name       String @db.VarChar(255)
+  city       String @db.VarChar(255)
+  postalCode String @map("postal_code") @db.VarChar(255)
+  phone      String @db.VarChar(255)
+  address    String @db.VarChar(255)
+
+  pets Pet[]
+
+  @@map("users")
+}
+
+model Pet {
+  id      Int    @id @unique @default(autoincrement())
+  name    String @db.VarChar(255)
+  type    String @db.VarChar(255)
+  breed   String @db.VarChar(255)
+  age     Int
+  gender  String @default("Unknown") @db.VarChar(255)
+  ownerId Int    @map("owner_id")
+
+  owner      User          @relation(fields: [ownerId], references: [id])
+  vaccines   PetVaccine[]
+  dewormings Deworming[]
+  sicknesses PetSickness[]
+  surgeries  Surgery[]
+
+  @@map("pets")
+}
+
+model Vaccine {
+  id           Int    @id @unique @default(autoincrement())
+  name         String @db.VarChar(255)
+  renewal      Int
+  manufacturer String @default("Unknown") @db.VarChar(255)
+
+  pets PetVaccine[]
+
+  @@map("vaccines")
+}
+
+model PetVaccine {
+  id        Int @id @unique @default(autoincrement())
+  petId     Int @map("pet_id")
+  vaccineId Int @map("vaccine_id")
+
+  pet     Pet     @relation(fields: [petId], references: [id])
+  vaccine Vaccine @relation(fields: [vaccineId], references: [id])
+
+  @@map("pet_vaccines")
+}
+
+model Dewormer {
+  id           Int    @id @unique @default(autoincrement())
+  name         String @db.VarChar(255)
+  manufacturer String @default("Unknown") @db.VarChar(255)
+
+  dewormings Deworming[]
+
+  @@map("dewormers")
+}
+
+model Deworming {
+  id         Int      @id @unique @default(autoincrement())
+  petId      Int      @map("pet_id")
+  dewormerId Int      @map("dewormer_id")
+  date       DateTime @default(now()) @db.Timestamp(6)
+
+  pet      Pet      @relation(fields: [petId], references: [id])
+  dewormer Dewormer @relation(fields: [dewormerId], references: [id])
+
+  @@map("dewormings")
+}
+
+model Sickness {
+  id   Int    @id @unique @default(autoincrement())
+  name String @db.VarChar(255)
+
+  petSicknesses PetSickness[]
+
+  @@map("sicknesses")
+}
+
+model PetSickness {
+  id          Int      @id @unique @default(autoincrement())
+  petId       Int      @map("pet_id")
+  sicknessId  Int      @map("sickness_id")
+  date        DateTime @default(now()) @db.Timestamp(6)
+  description String   @db.VarChar(255)
+
+  pet      Pet      @relation(fields: [petId], references: [id])
+  sickness Sickness @relation(fields: [sicknessId], references: [id])
+
+  @@map("pet_sicknesses")
+}
+
+model Surgery {
+  id             Int      @id @unique @default(autoincrement())
+  name           String   @db.VarChar(255)
+  petId          Int      @map("pet_id")
+  description    String   @db.VarChar(255)
+  date           DateTime @default(now()) @db.Timestamp(6)
+  cost           Float
+  veterinarianId Int      @map("veterinarian_id")
+
+  pet          Pet          @relation(fields: [petId], references: [id])
+  veterinarian Veterinarian @relation(fields: [veterinarianId], references: [id])
+
+  @@map("surgeries")
+}
+
+model Veterinarian {
+  id         Int    @id @unique @default(autoincrement())
+  name       String @db.VarChar(255)
+  city       String @db.VarChar(255)
+  postalCode String @map("postal_code") @db.VarChar(255)
+  phone      String @db.VarChar(255)
+  address    String @db.VarChar(255)
+
+  surgeries Surgery[]
+
+  @@map("veterinarians")
+}
