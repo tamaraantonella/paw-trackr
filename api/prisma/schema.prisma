@@ -6,11 +6,10 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
-
 
 model User {
   id         Int    @id @unique @default(autoincrement())
@@ -34,6 +33,7 @@ model Pet {
   age     Int
   gender  String @default("Unknown") @db.VarChar(255)
   ownerId Int    @map("owner_id")
+  image   String @db.VarChar(255)
 
   owner        User             @relation(fields: [ownerId], references: [id])
   vaccines     PetVaccine[]
@@ -42,6 +42,7 @@ model Pet {
   surgeries    Surgery[]
   appointments VetAppointment[]
 
+  @@index([ownerId])
   @@map("pets")
 }
 
@@ -64,6 +65,8 @@ model PetVaccine {
   pet     Pet     @relation(fields: [petId], references: [id])
   vaccine Vaccine @relation(fields: [vaccineId], references: [id])
 
+  @@index([petId])
+  @@index([vaccineId])
   @@map("pet_vaccines")
 }
 
@@ -86,6 +89,8 @@ model Deworming {
   pet      Pet      @relation(fields: [petId], references: [id])
   dewormer Dewormer @relation(fields: [dewormerId], references: [id])
 
+  @@index([petId])
+  @@index([dewormerId])
   @@map("dewormings")
 }
 
@@ -109,6 +114,9 @@ model PetSickness {
   pet      Pet      @relation(fields: [petId], references: [id])
   sickness Sickness @relation(fields: [sicknessId], references: [id])
 
+  @@index([petId])
+  @@index([sicknessId])
+
   @@map("pet_sicknesses")
 }
 
@@ -123,6 +131,9 @@ model Surgery {
 
   pet          Pet          @relation(fields: [petId], references: [id])
   veterinarian Veterinarian @relation(fields: [veterinarianId], references: [id])
+
+  @@index([petId])
+  @@index([veterinarianId])
 
   @@map("surgeries")
 }
@@ -155,5 +166,8 @@ model VetAppointment {
   veterinarian Veterinarian? @relation(fields: [veterinarianId], references: [id])
   sickness     Sickness?     @relation(fields: [sicknessId], references: [id])
 
+  @@index([petId])
+  @@index([veterinarianId])
+  @@index([sicknessId])
   @@map("vet_appointments")
 }
