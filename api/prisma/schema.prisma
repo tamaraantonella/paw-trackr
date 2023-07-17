@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -33,11 +33,12 @@ model Pet {
   gender  String @default("Unknown") @db.VarChar(255)
   ownerId Int    @map("owner_id")
 
-  owner      User          @relation(fields: [ownerId], references: [id])
-  vaccines   PetVaccine[]
-  dewormings Deworming[]
-  sicknesses PetSickness[]
-  surgeries  Surgery[]
+  owner        User             @relation(fields: [ownerId], references: [id])
+  vaccines     PetVaccine[]
+  dewormings   Deworming[]
+  sicknesses   PetSickness[]
+  surgeries    Surgery[]
+  appointments VetAppointment[]
 
   @@map("pets")
 }
@@ -91,6 +92,7 @@ model Sickness {
   name String @db.VarChar(255)
 
   petSicknesses PetSickness[]
+  appointments  VetAppointment[]
 
   @@map("sicknesses")
 }
@@ -131,7 +133,25 @@ model Veterinarian {
   phone      String @db.VarChar(255)
   address    String @db.VarChar(255)
 
-  surgeries Surgery[]
+  surgeries    Surgery[]
+  appointments VetAppointment[]
 
   @@map("veterinarians")
+}
+
+model VetAppointment {
+  id             Int       @id @unique @default(autoincrement())
+  petId          Int       @map("pet_id")
+  veterinarianId Int?      @map("veterinarian_id")
+  date           DateTime? @default(now()) @db.Timestamp(6)
+  description    String    @db.VarChar(255)
+  sicknessId     Int?      @map("sickness_id")
+  diagnosis      String?   @db.VarChar(255)
+  instructions   String?   @db.VarChar(255)
+
+  pet          Pet           @relation(fields: [petId], references: [id])
+  veterinarian Veterinarian? @relation(fields: [veterinarianId], references: [id])
+  sickness     Sickness?     @relation(fields: [sicknessId], references: [id])
+
+  @@map("vet_appointments")
 }
