@@ -12,13 +12,14 @@ datasource db {
 }
 
 model User {
-  id         Int    @id @unique @default(autoincrement())
-  email      String @unique @db.VarChar(255)
-  name       String @db.VarChar(255)
-  city       String @db.VarChar(255)
-  postalCode String @map("postal_code") @db.VarChar(255)
-  phone      String @db.VarChar(255)
-  address    String @db.VarChar(255)
+  id         Int     @id @unique @default(autoincrement())
+  email      String  @unique @db.VarChar(255)
+  name       String  @db.VarChar(255)
+  city       String? @db.VarChar(255)
+  postalCode String? @map("postal_code") @db.VarChar(255)
+  phone      String? @db.VarChar(255)
+  address    String? @db.VarChar(255)
+  password   String  @db.VarChar(255)
 
   pets Pet[]
 
@@ -116,7 +117,6 @@ model PetSickness {
 
   @@index([petId])
   @@index([sicknessId])
-
   @@map("pet_sicknesses")
 }
 
@@ -134,7 +134,6 @@ model Surgery {
 
   @@index([petId])
   @@index([veterinarianId])
-
   @@map("surgeries")
 }
 
