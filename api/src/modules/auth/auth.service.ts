@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException
@@ -21,15 +22,23 @@ export class AuthService {
   async register(userObject: RegisterAuthDto) {
     const { password, name, email } = userObject;
     const plainToHash: string = await hash(password, 10);
+    const foundUser = await this.prisma.user.findUnique({
+      where: { email: userObject.email }
+    });
+    if (foundUser) {
+      throw new BadRequestException();
+    }
     try {
-      return this.prisma.user.create({
+      await this.prisma.user.create({
         data: {
           name,
           email,
           password: plainToHash
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async login(userObject: LoginAuthDto) {
