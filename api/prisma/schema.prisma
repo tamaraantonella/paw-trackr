@@ -12,14 +12,14 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @unique @default(autoincrement())
+  id         String    @id @unique @default(uuid())
   email      String    @unique @db.VarChar(255)
   name       String    @db.VarChar(255)
   city       String?   @db.VarChar(255)
   postalCode String?   @map("postal_code") @db.VarChar(255)
   phone      String?   @db.VarChar(255)
   address    String?   @db.VarChar(255)
-  password   String    @db.VarChar(255)
+  password   String?   @db.VarChar(255)
   created    DateTime  @default(now()) @db.Timestamp(6)
   modified   DateTime? @default(now()) @db.Timestamp(6)
 
@@ -29,16 +29,16 @@ model User {
 }
 
 model Pet {
-  id      Int    @id @unique @default(autoincrement())
-  name    String @db.VarChar(255)
-  type    String @db.VarChar(255)
-  breed   String @db.VarChar(255)
+  id      Int     @id @unique @default(autoincrement())
+  name    String  @db.VarChar(255)
+  type    String  @db.VarChar(255)
+  breed   String? @db.VarChar(255)
   age     Int
-  gender  String @default("Unknown") @db.VarChar(255)
-  ownerId Int    @map("owner_id")
-  image   String @db.VarChar(255)
+  gender  String  @default("Unknown") @db.VarChar(255)
+  ownerId String? @map("owner_id")
+  image   String? @db.VarChar(255)
 
-  owner        User             @relation(fields: [ownerId], references: [id])
+  owner        User?            @relation(fields: [ownerId], references: [id])
   vaccines     PetVaccine[]
   dewormings   Deworming[]
   sicknesses   PetSickness[]
@@ -64,6 +64,7 @@ model PetVaccine {
   id        Int @id @unique @default(autoincrement())
   petId     Int @map("pet_id")
   vaccineId Int @map("vaccine_id")
+  date      DateTime @default(now()) @db.Timestamp(6)
 
   pet     Pet     @relation(fields: [petId], references: [id])
   vaccine Vaccine @relation(fields: [vaccineId], references: [id])
