@@ -12,4 +12,23 @@ export class UsersService {
       }
     });
   }
+
+  async findOwnDetails(id: number) {
+    return this.prisma.user.findUnique({
+      where: {
+        id
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        postalCode: true,
+        phone: true,
+        address: true,
+        city: true,
+        created: true,
+        modified: true
+      }
+    });
+  }
 }
