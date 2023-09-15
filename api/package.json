@@ -38,7 +38,6 @@
     "@types/passport-jwt": "^3.0.9",
     "@types/passport-local": "^1.0.35",
     "bcrypt": "^5.1.1",
-    "commitizen": "^4.3.0",
     "dotenv": "^16.3.1",
     "nestjs-zod": "^3.0.0",
     "passport": "^0.6.0",
