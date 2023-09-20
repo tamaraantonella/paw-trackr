@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    margin: 0;
+    --color-fondo: #FFFFFF;
+    --color-texto: #343434;
+    --color-boton: #86A8FF;
+    --color-margenes: #499DFF;
+    --color-alerta: #e74c3c;
+    --color-error: #990004;
+  }
