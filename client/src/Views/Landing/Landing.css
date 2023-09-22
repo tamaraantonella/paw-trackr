@@ -1,0 +1,15 @@
+/*.landing{
+    background: red;
+}*/
+body{
+    background-color: #D6E9FF;
+}
+
+.text {
+    color: var(--color-texto);
+    font-weight: bolder;
+}
+
+.login{
+    color: #3A89FF;
+}
