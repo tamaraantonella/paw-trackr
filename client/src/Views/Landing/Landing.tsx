@@ -1,6 +1,6 @@
 import "./Landing.css";
 import logo from "../../assets/logo_bluegrey.png";
-import SingUp from "../../Components/ButtonSingUp/SingUp";
+import SingUp from "../../Components/ButtonSingUp/SignUp";
 
 const Landing = () => {
   return (
